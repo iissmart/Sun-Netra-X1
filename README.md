@@ -35,3 +35,50 @@ By default the system will try to boot from the disk, and if no OS is found it w
 
 ## Where should I be now?
 You should have some way of accessing the LOM over the first console port. You understand how to switch between the LOM prompt, the OBP prompt, and the OS prompt. You'll also need an ethernet cable connected to the first network port. Note that since we'll be relying on a lot of layer 2 ARP broadcast traffic you can't do any fancy wireless bridging, just use a plain ethernet cable and try to be as "close" (in terms of network route) to your host server as possible.
+
+# Phase 2: Netbooting
+So what actually happens when the server netboots? You can either `boot net` to use ARP/RARP or `boot net:dhcp` to use DHCP. I didn't want to deal with reconfiguring my primary router (since it's the DHCP server), so I went with RARP. That seems to be the more native option, anyway.
+
+## My server
+For the following, I'm referring to the Netra as the **client** and my primary home server as the **server**. The server is a generic Ubuntu 16.04 x86-64 server. It's separated from the client with a standard network switch, with everything hardwired.
+
+## The RARP daemon
+This is the first part of netbooting that will be common among all OS types. The server needs to identify the network in order to move onto the next step.
+
+Ubuntu carries a `rarpd` package that acts as a RARP server. It listens for broadcast RARP messages and cross references the request to the `/etc/ethers` file. If it finds the MAC address from the request in the file, it will respond with the IP address. That's how the client gets an IP address on the network without DHCP. Note that the client won't know anything about the subnet or netmask, so make sure you're on a standard network like 192.168.1.X.
+
+The format of `/etc/ethers` is `<mac address> <ip address>`, e.g.
+
+`00:03:ba:22:83:a8 192.168.1.15`
+
+## The TFTP Server
+This is the second (and last) part of netbooting that will be common among all OS types. After the client gains network access, the next thing it does is try to find a TFTP server using broadcast IP packets.
+
+Ubuntu carries a `tftp-hpa` package that contains a TFTP server. Not much to configure here except the directory to store the TFTP files. Mine ended up being `/var/lib/tftpboot/`.
+
+### What is the client asking for?
+Wireshark will tell you. Since you know the IP address you can filter by the IP to see the TFTP requests. The client uses a hex encoding of the MAC address as the filename to look for, e.g. `C0B0932B`. This is what you'll need to name the file in the TFTP folder, since that's what it will copy over the network and start loading. Note that the Netra X1 can only load ~4MB at this stage due to how the processor is initialized by OBP. If it runs out of memory before the file is done downloading you'll get the `Fast Data Access MMU Miss` error and will need to reset.
+
+## Where should I be now?
+The Netra should be getting an IP and trying to copy the boot file from the TFTP server. You can troubleshoot this by just using a text file, or really anything as long as it has the right name. If the server fails to boot it'll just sit with an error until you reset it, but if it can't find the file it will keep trying to send broadcast requests without any error messages.
+
+This is where things start to deviate depending on the OS you're trying to install.
+
+# Windows 10
+Just kidding :)
+
+# Debian
+Sadly Debian dropped SPARC64 support after 7.0 (Wheezy), so that's the newest official version to get. I tried looking for Debian 10 images (the latest at the time of this writing), but couldn't find netboot images that were small enough for the Netra to load. It seems like the 4.X kernels are too large for the Netra to netboot :(
+
+The official Debian 7 SPARC netboot image [can be found here](http://archive.debian.org/debian/dists/wheezy/main/installer-sparc/current/images/netboot/boot.img). Download this .img file into your tftp folder and let the Netra download it.
+
+# Solaris
+Solaris 11 dropped support for the UltraSPARC II series, so Solaris 10 is the newest version that can be installed.
+
+## Bootparams
+
+## NFS
+
+# Gentoo
+
+# OpenBSD
