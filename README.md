@@ -7,6 +7,7 @@ Since the Sun Netra X1 doesn't have a video card or any video output, doesn't ha
 ## What is netbooting?
 Netbooting, also called PXE booting, is a way to load an OS over the network from the BIOS. The system loads the BIOS, initializes the network card, and sends requests to identify the network and retrieve a file from a server on the local network. Eventually the kernel is loaded and the OS is booted. This could either be a fully functional OS, a recovery image to restore the OS installed on the local disk, an OS installer, or just some temporary utility like a livecd, dban, clonezilla, gparted, etc. I'm going to be using an OS installer.
 
+# Phase 1: The Hardware
 ## Console output
 No video output means you'll have to use the console port. Rather than use a PC with a serial DB9 port to directly connect to it, I built a portable terminal server using a Raspberry Pi Zero W, a USB OTG adapter, a USB-to-DB9 adapter, and finally a DB9 to RJ45 Cisco terminal server cable. 9600 8N1 later, and I can telnet into my Raspberry Pi like it's a real terminal server!
 
