@@ -62,6 +62,8 @@ Wireshark will tell you. Since you know the IP address you can filter by the IP 
 ## Where should I be now?
 The Netra should be getting an IP and trying to copy the boot file from the TFTP server. You can troubleshoot this by just using a text file, or really anything as long as it has the right name. If the server fails to boot it'll just sit with an error until you reset it, but if it can't find the file it will keep trying to send broadcast requests without any error messages.
 
+Your life will be a lot easier if all of the above configuration is dialed in/locked down so you don't have to worry about it. Save the configuration and get the daemons running in the background so they are out of the way - the only thing you need to worry about after this is swapping files in the tftpboot folder.
+
 This is where things start to deviate depending on the OS you're trying to install.
 
 # Windows 10
@@ -74,6 +76,8 @@ The official Debian 7 SPARC netboot image [can be found here](http://archive.deb
 
 # Solaris
 Solaris 11 dropped support for the UltraSPARC II series, so Solaris 10 is the newest version that can be installed.
+
+Remember when I said you only need to worry about swapping files in the tftpboot folder from now on? Well Sun (now Oracle) likes to make things complicated, so there's more infrastructure to set up before anything will load.
 
 ## Bootparams
 
