@@ -80,10 +80,10 @@ Once the tftp transfer is done, the Debian kernel and installer should start loa
 ## Installation notes
 * The installer won't be able to access the Debian security repository. This is expected since they aren't publishing security updates for SPARC64 platforms.
 * The clock in my Netra ran a little hot, preventing `ntpd` from maintaining a stable time sync. To fix this, stop `ntpd` and/or any other time sync daemons, then install `adjtimex`. During installation it will calibrate the clock and fix the tickrate. In my case, it adjusted the tickrate from 10000 to 10010. This can be seen with `adjtimex -p`.
-* The silo bootloader works fine, but if you want grub you can do it with:
+* The silo bootloader works fine, but if you want grub you can install it with:
   * sudo apt-get purge silo
-  * sudo apt-get install grub
-  * sudo grub-install /dev/hda
+  * sudo apt-get install grub2
+  * sudo grub-install /dev/sda
   * sudo update-grub
 
 # Solaris
