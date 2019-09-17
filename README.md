@@ -78,13 +78,12 @@ The official Debian 7 SPARC netboot image [can be found here](http://archive.deb
 Once the tftp transfer is done, the Debian kernel and installer should start loading! Let it autodetect the network, then when it asks what mirror to use for the install scroll to the very top where it says **enter information manually**. The Debian archive mirror hostname should be `archive.debian.org`, and the Debian archive mirror directory should remain the default of `/debian/`. That's it!
 
 ## Installation notes
-* Leave the root password blank so it disables the account. The installer will grant the first user account the ability to elevate to root with `sudo`.
 * The clock in my Netra ran a little hot, preventing `ntpd` from maintaining a stable time sync. To fix this, stop `ntpd` and/or any other time sync daemons, then install `adjtimex`. During installation it will calibrate the clock and fix the tickrate. In my case, it adjusted the tickrate from 10000 to 10010. This can be seen with `adjtimex -p`
 * The silo bootloader works fine, but if you want grub you can do it with:
-** sudo apt-get purge silo
-** sudo apt-get install grub
-** sudo grub-install /dev/hda
-** sudo update-grub
+  * sudo apt-get purge silo
+  * sudo apt-get install grub
+  * sudo grub-install /dev/hda
+  * sudo update-grub
 
 # Solaris
 Solaris 11 dropped support for the UltraSPARC II series, so Solaris 10 is the newest version that can be installed.
