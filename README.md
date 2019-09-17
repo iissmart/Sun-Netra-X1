@@ -44,7 +44,7 @@ So what actually happens when the server netboots? You can either `boot net` to 
 For the following, I'm referring to the Netra as the **client** and my primary home server as the **server**. The server is a generic Ubuntu 16.04 x86-64 server. It's separated from the client with a standard network switch, with everything hardwired.
 
 ## The RARP daemon
-This is the first part of netbooting that will be common among all OS types. The server needs to identify the network in order to move onto the next step.
+This is the first part of netbooting that will be common among all OS types. The client needs to identify the network in order to move onto the next step.
 
 Ubuntu carries a `rarpd` package that acts as a RARP server. It listens for broadcast RARP messages and cross references the request to the `/etc/ethers` file. If it finds the MAC address from the request in the file, it will respond with the IP address. That's how the client gets an IP address on the network without DHCP. Note that the client won't know anything about the subnet or netmask, so make sure you're on a standard network like 192.168.1.X.
 
@@ -61,7 +61,7 @@ Ubuntu carries a `tftp-hpa` package that contains a TFTP server. Not much to con
 Wireshark will tell you. Since you know the IP address you can filter by the IP to see the TFTP requests. The client uses a hex encoding of the MAC address as the filename to look for, e.g. `C0B0932B`. This is what you'll need to name the file in the TFTP folder, since that's what it will copy over the network and start loading. Note that the Netra X1 can only load ~4MB at this stage due to how the processor is initialized by OBP. If it runs out of memory before the file is done downloading you'll get the `Fast Data Access MMU Miss` error and will need to reset.
 
 ## Where should I be now?
-The Netra should be getting an IP and trying to copy the boot file from the TFTP server. You can troubleshoot this by just using a text file, or really anything as long as it has the right name. If the server fails to boot it'll just sit with an error until you reset it, but if it can't find the file it will keep trying to send broadcast requests without any error messages.
+The Netra should be getting an IP and trying to copy the boot file from the TFTP server. You can troubleshoot this by just using a text file, or really anything as long as it has the right name. If the client fails to boot it'll just sit with an error until you reset it, but if it can't find the file it will keep trying to send broadcast requests without any error messages.
 
 Your life will be a lot easier if all of the above configuration is dialed in/locked down so you don't have to worry about it. Save the configuration and get the daemons running in the background so they are out of the way - the only thing you need to worry about after this is swapping files in the tftpboot folder.
 
@@ -74,6 +74,17 @@ Just kidding :)
 Sadly Debian dropped SPARC64 support after 7.0 (Wheezy), so that's the newest official version to get. I tried looking for Debian 10 images (the latest at the time of this writing), but couldn't find netboot images that were small enough for the Netra to load. It seems like the 4.X kernels are too large for the Netra to netboot :(
 
 The official Debian 7 SPARC netboot image [can be found here](http://archive.debian.org/debian/dists/wheezy/main/installer-sparc/current/images/netboot/boot.img). Download this .img file into your tftp folder and let the Netra download it.
+
+Once the tftp transfer is done, the Debian kernel and installer should start loading! Let it autodetect the network, then when it asks what mirror to use for the install scroll to the very top where it says **enter information manually**. The Debian archive mirror hostname should be `archive.debian.org`, and the Debian archive mirror directory should remain the default of `/debian/`. That's it!
+
+## Installation notes
+* Leave the root password blank so it disables the account. The installer will grant the first user account the ability to elevate to root with `sudo`.
+* The clock in my Netra ran a little hot, preventing `ntpd` from maintaining a stable time sync. To fix this, stop `ntpd` and/or any other time sync daemons, then install `adjtimex`. During installation it will calibrate the clock and fix the tickrate. In my case, it adjusted the tickrate from 10000 to 10010. This can be seen with `adjtimex -p`
+* The silo bootloader works fine, but if you want grub you can do it with:
+** sudo apt-get purge silo
+** sudo apt-get install grub
+** sudo grub-install /dev/hda
+** sudo update-grub
 
 # Solaris
 Solaris 11 dropped support for the UltraSPARC II series, so Solaris 10 is the newest version that can be installed.
