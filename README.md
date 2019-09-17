@@ -78,7 +78,8 @@ The official Debian 7 SPARC netboot image [can be found here](http://archive.deb
 Once the tftp transfer is done, the Debian kernel and installer should start loading! Let it autodetect the network, then when it asks what mirror to use for the install scroll to the very top where it says **enter information manually**. The Debian archive mirror hostname should be `archive.debian.org`, and the Debian archive mirror directory should remain the default of `/debian/`. That's it!
 
 ## Installation notes
-* The clock in my Netra ran a little hot, preventing `ntpd` from maintaining a stable time sync. To fix this, stop `ntpd` and/or any other time sync daemons, then install `adjtimex`. During installation it will calibrate the clock and fix the tickrate. In my case, it adjusted the tickrate from 10000 to 10010. This can be seen with `adjtimex -p`
+* The installer won't be able to access the Debian security repository. This is expected since they aren't publishing security updates for SPARC64 platforms.
+* The clock in my Netra ran a little hot, preventing `ntpd` from maintaining a stable time sync. To fix this, stop `ntpd` and/or any other time sync daemons, then install `adjtimex`. During installation it will calibrate the clock and fix the tickrate. In my case, it adjusted the tickrate from 10000 to 10010. This can be seen with `adjtimex -p`.
 * The silo bootloader works fine, but if you want grub you can do it with:
   * sudo apt-get purge silo
   * sudo apt-get install grub
@@ -95,5 +96,6 @@ Remember when I said you only need to worry about swapping files in the tftpboot
 ## NFS
 
 # Gentoo
+I can't get Gentoo to install. The [most recent experimental tftpboot image I found](https://gentoo.osuosl.org/experimental/sparc/tftpboot/sparc64/gentoo-sparc64-20100413.tftpboot) is from 2010 and the [most recent stage3 tarball it can extract] is from 2014 (the `tar` executable provided by the tftpboot image only knows how to extract \*.bz2 files, not \*.xz files), and the tar command fails partway through extraction. I'm not a Gentoo expert, so I'm not sure if I'm doing something wrong or if it's a bad combination of tftpboot image and stage3 tarball.
 
 # OpenBSD
