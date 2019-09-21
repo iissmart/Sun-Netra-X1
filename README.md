@@ -95,7 +95,29 @@ Remember when I said you only need to worry about swapping files in the tftpboot
 
 ## NFS
 
+## The Boot Process
+In OpenBoot you'll want to boot with `boot net -v - install`.
+
+## Finally Installing
+During install it will ask you a few questions. Note that if you're using a device that doesn't have function keys (like a chromebook), you can use the key sequence `Esc-number key` to emulate function keys during the install. For example, most of the install screens require pressing F2 to continue, but `Esc-2` also works. Once you hit `Escape` you should see the navigation bar at the bottom change to using number keys instead of function keys. You'll still have to hit `Escape` before every number, however.
+
+### What type of terminal are you using?
+I wasn't sure since I'm using a homemade Raspberry Pi terminal server, but I had the best luck with `12) X Terminal Emulator (xterms)`.
+
+### Default Route for dmfe0
+`Detect one upon reboot` doesn't seem to detect my default route upon reboot. I could select `Specify one` and manually enter `192.168.1.1`, or if I chose `Detect one upon reboot` during the install I just needed to use the `route` command to manually specify one once the OS was installed.
+
+### Oracle registration
+I don't know, I just entered my email address without any other account information.
+
+### Select Software
+`Entire Distribution plus OEM support`: This seems to produce error messages at the end of the install, causing the installer to fail.
+`Entire Distribution`: This seems to hang at the very end of the install without any errors, but also without a bootable system.
+`Developer System Support`: 
+`Core System Support`: This installs nice and fast (relatively speaking), but lacked many of the system management tools I was expecting to have preinstalled. It's not worth the headache of manually installing packages off the DVD image from the Solaris command line.
+
 # Gentoo
 I can't get Gentoo to install. The [most recent experimental tftpboot image I found](https://gentoo.osuosl.org/experimental/sparc/tftpboot/sparc64/gentoo-sparc64-20100413.tftpboot) is from 2010 and the [most recent stage3 tarball it can extract](http://distfiles.gentoo.org/releases/sparc/autobuilds/20141201/multilib/stage3-sparc64-multilib-20141201.tar.bz2) is from 2014 (the `tar` executable provided by the tftpboot image only knows how to extract \*.bz2 files, not \*.xz files), and the tar command fails partway through extraction. I'm not a Gentoo expert, so I'm not sure if I'm doing something wrong or if it's a bad combination of tftpboot image and stage3 tarball.
 
 # OpenBSD
+Unfortunately I ran out of mental capacity before I could try this. From what I could tell the SPARC architecture is well supported by OpenBSD, even to the point where they provide the LOM(lite?) application in the OS, just like Solaris.
