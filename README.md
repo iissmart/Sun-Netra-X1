@@ -91,12 +91,39 @@ Solaris 11 dropped support for the UltraSPARC II series, so Solaris 10 is the ne
 
 Remember when I said you only need to worry about swapping files in the tftpboot folder from now on? Well Sun (now Oracle) likes to make things complicated, so there's more infrastructure to set up before anything will load.
 
+## The ISO
+You'll need to download and mount the Solaris ISO on the server. Grab the latest [SPARC version here](https://www.oracle.com/solaris/solaris10/downloads/solaris10-get-jsp-downloads.html), then mount it using a loopback. In my case, I mounted it like this: `/root/sol-10-u11-ga-sparc-dvd.iso on /mnt/iso type iso9660 (ro,relatime)`. Not sure if this matters, but everything is owned by `root` here.
+
+## The TFTP Server
+The file to be netbooted is actually hosted on the ISO. Copy `/mnt/iso/Solaris_10/Tools/Boot/platform/sun4u/inetboot` to `/var/lib/tftpboot` (or wherever your TFTP folder is) and rename it to the filename the client is looking for.
+
 ## Bootparams
+The client will start netbooting at this point, but the file it downloads is just the first stage of the boot process. When this loads, it tries to download the full kernel and installer via an NFSv4 mount. It determines where this mount is with a bootparams request over the network.
+
+Ubuntu carries a `bootparamd` package that contains a bootparams server. Install it and configure the `/etc/bootparams` file like this:
+
+`netra root=192.168.1.3:/iso/Solaris_10/Tools/Boot \
+                install=192.168.1.3:/iso/ \
+                boottype=:in \
+                rootopts=192.168.1.3:rsize=8192`
+
+This was **EXTREMELY** finnicky, so make sure to copy this exactly if you're mounting things the exact same way as me. Otherwise paths will need to be tweaked. I followed [this guide](http://hintshop.ludvig.co.nz/show/solaris-jumpstart-linux-server/) to build my bootparams file - this might help you as well.
+
+Note that `netra` was the hostname defined in my router at this point in time, meaning all DHCP requests from this MAC address automatically assigned a reserved IP and tied it to that hostname. I'm assuming an IP address would work here as well, but I haven't tested it.
 
 ## NFS
+The NFS server is the final step to the boot process. This contains the mounted ISO which the booted client can pull from and use to install the OS.
+
+Ignore what you read on the Internet - this can definitely work with NFSv4, if you configure it correctly!
+
+Ubuntu carries a `nfs-kernel-server` package that contains an NFSv4 server. Install it and configure the `/etc/exports` file with this line:
+
+`/mnt *(fsid=0,ro,async,no_root_squash,anonuid=0,anongid=0,no_subtree_check,crossmnt)`
+
+This hosts the folders in `/mnt` (including `/mnt/iso` and others) to all IP addresses. This is why the `/etc/bootparams` file uses `/iso/` as the root path, because NFSv4 hides the mount point when exported. The *particularly* important parameter here is `crossmnt`, which makes mounted filesystems visible in the NFSv4 mount. This one took me a while to figure out, but the easy way to troubleshoot this is to try mounting this NFSv4 mount somewhere locally, and then browse into it and see if you can see anything.
 
 ## The Boot Process
-In OpenBoot you'll want to boot with `boot net -v - install`.
+In OpenBoot you'll want to boot with `boot net -v - install`. This gives you more verbose output of the boot process and kicks off the Solaris installer.
 
 ## Finally Installing
 During install it will ask you a few questions. Note that if you're using a device that doesn't have function keys (like a chromebook), you can use the key sequence `Esc-number key` to emulate function keys during the install. For example, most of the install screens require pressing F2 to continue, but `Esc-2` also works. Once you hit `Escape` you should see the navigation bar at the bottom change to using number keys instead of function keys. You'll still have to hit `Escape` before every number, however.
