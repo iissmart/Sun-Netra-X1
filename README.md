@@ -102,10 +102,12 @@ The client will start netbooting at this point, but the file it downloads is jus
 
 Ubuntu carries a `bootparamd` package that contains a bootparams server. Install it and configure the `/etc/bootparams` file like this:
 
-```netra root=192.168.1.3:/iso/Solaris_10/Tools/Boot \
+```
+netra root=192.168.1.3:/iso/Solaris_10/Tools/Boot \
                 install=192.168.1.3:/iso/ \
                 boottype=:in \
-                rootopts=192.168.1.3:rsize=8192```
+                rootopts=192.168.1.3:rsize=8192
+```
 
 This was **EXTREMELY** finnicky, so make sure to copy this exactly if you're mounting things the exact same way as me. Otherwise paths will need to be tweaked. I followed [this guide](http://hintshop.ludvig.co.nz/show/solaris-jumpstart-linux-server/) to build my bootparams file - this might help you as well.
 
