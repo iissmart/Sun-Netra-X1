@@ -140,10 +140,10 @@ I wasn't sure since I'm using a homemade Raspberry Pi terminal server, but I had
 I don't know, I just entered my email address without any other account information.
 
 ### Select Software
-`Entire Distribution plus OEM support`: This seems to produce error messages at the end of the install, causing the installer to fail.
-`Entire Distribution`: This seems to hang at the very end of the install without any errors, but also without a bootable system.
-`Developer System Support`: This was the largest software set I could get to install.
-`Core System Support`: This installs nice and fast (relatively speaking), but lacked many of the system management tools I was expecting to have preinstalled. It's not worth the headache of manually installing packages off the DVD image from the Solaris command line.
+* `Entire Distribution plus OEM support`: This seems to produce error messages at the end of the install, causing the installer to fail.
+* `Entire Distribution`: This seems to hang at the very end of the install without any errors, but also without a bootable system.
+* `Developer System Support`: This was the largest software set I could get to install.
+* `Core System Support`: This installs nice and fast (relatively speaking), but lacked many of the system management tools I was expecting to have preinstalled. It's not worth the headache of manually installing packages off the DVD image from the Solaris command line.
 
 ## Installation notes
 * Enable root login over ssh if you don't care about security: set `PermitRootLogin` to `yes` in `/etc/ssh/sshd_config` and restart sshd.
@@ -151,10 +151,11 @@ I don't know, I just entered my email address without any other account informat
 * Did I mention OpenCSW is awesome? Here's some quick tips:
   * Install OpenCSW: `pkgadd -d http://get.opencsw.org/now`
   * Update package lists: `/opt/csw/bin/pkgutil -U -u -y`
-  * Fix paths. Edit /etc/default/login, uncomment `PATH` and `SUPATH` and add `/opt/csw/bin:` to the start. In bash, run `export MANPATH=/opt/csw/share/man:/usr/share/man` to get man pages for the new packages.
+  * Fix paths. Edit `/etc/default/login`, uncomment `PATH` and `SUPATH` and add `/opt/csw/bin:` to the start. In bash, run `export MANPATH=/opt/csw/share/man:/usr/share/man` to get man pages for the new packages.
   * Install vim: `/opt/csw/bin/pkgutil -i vim -y` and whatever else you want!
-* Oddly the `Developer System Support` software set doesn't come with the native Solaris compiler. It does come with GCC, but I wanted to compare the GCC port with the native Solaris compiler so I had to find it elsewhere. It's part of the Sun (Oracle) Developer Studio software set, which can be [downloaded here](https://www.oracle.com/tools/developerstudio/downloads/developer-studio-jsp.html).
+* Oddly the `Developer System Support` software set doesn't come with any C compilers. I wanted to compare the GCC port with the native Solaris compiler so I had to find these elsewhere. GCC can likely be found with OpenCSW. The native Solaris compiler is part of the Sun (Oracle) Developer Studio software set, which can be [downloaded here](https://www.oracle.com/tools/developerstudio/downloads/developer-studio-jsp.html).
   * WARNING: Developer Studio 12.6 isn't compatible with UltraSPARC IIe, although it will install regardless and break a bunch of packages, including java. If you make the same mistake as me, and `java -version` no longer works, use `patchrm 119963-35` to uninstall the offending patch. I found this patch by looking at `showrev -p | grep -i libc` and uninstalling the newest patch that was found (since `java -version` was complaining that libCrun.so.1 was incompatible). Developer Studio 12.5 works with the UltraSPARC IIe.
+  * To set up paths for Sun (Oracle) Developer Studio 12.5, edit `/etc/default/login` and add `/opt/developerstudio12.5/bin:` to the start of both `PATH` and `SUPATH`, and run `export MANPATH=/opt/developerstudio12.5/share/man:/opt/csw/share/man:/usr/share/man` to get man pages for the new packages.
 
 # Gentoo
 I can't get Gentoo to install. The [most recent experimental tftpboot image I found](https://gentoo.osuosl.org/experimental/sparc/tftpboot/sparc64/gentoo-sparc64-20100413.tftpboot) is from 2010 and the [most recent stage3 tarball it can extract](http://distfiles.gentoo.org/releases/sparc/autobuilds/20141201/multilib/stage3-sparc64-multilib-20141201.tar.bz2) is from 2014 (the `tar` executable provided by the tftpboot image only knows how to extract \*.bz2 files, not \*.xz files), and the tar command fails partway through extraction. I'm not a Gentoo expert, so I'm not sure if I'm doing something wrong or if it's a bad combination of tftpboot image and stage3 tarball.
