@@ -1,3 +1,38 @@
+ Table of Contents
+ =================
+ 
+ * [Sun Netra X1](my-readme.md#sun-netra-x1)
+      * [What is this?](my-readme.md#what-is-this)
+      * [What is netbooting?](my-readme.md#what-is-netbooting)
+   * [Phase 1: The Hardware](my-readme.md#phase-1-the-hardware)
+      * [Console output](my-readme.md#console-output)
+      * [The LOM (Lights Out Management)](my-readme.md#the-lom-lights-out-management)
+      * [The Netra "BIOS" (OpenBoot)](my-readme.md#the-netra-bios-openboot)
+      * [Where should I be now?](my-readme.md#where-should-i-be-now)
+   * [Phase 2: Netbooting](my-readme.md#phase-2-netbooting)
+      * [My server](my-readme.md#my-server)
+      * [The RARP daemon](my-readme.md#the-rarp-daemon)
+      * [The TFTP Server](my-readme.md#the-tftp-server)
+         * [What is the client asking for?](my-readme.md#what-is-the-client-asking-for)
+      * [Where should I be now?](my-readme.md#where-should-i-be-now-1)
+   * [Windows 10](my-readme.md#windows-10)
+   * [Debian](my-readme.md#debian)
+      * [Installation notes](my-readme.md#installation-notes)
+   * [Solaris](my-readme.md#solaris)
+      * [The ISO](my-readme.md#the-iso)
+      * [The TFTP Server](my-readme.md#the-tftp-server-1)
+      * [Bootparams](my-readme.md#bootparams)
+      * [NFS](my-readme.md#nfs)
+      * [The Boot Process](my-readme.md#the-boot-process)
+      * [Finally Installing](my-readme.md#finally-installing)
+         * [What type of terminal are you using?](my-readme.md#what-type-of-terminal-are-you-using)
+         * [Default Route for dmfe0](my-readme.md#default-route-for-dmfe0)
+         * [Oracle registration](my-readme.md#oracle-registration)
+         * [Select Software](my-readme.md#select-software)
+      * [Installation notes](my-readme.md#installation-notes-1)
+   * [Gentoo](my-readme.md#gentoo)
+   * [OpenBSD](my-readme.md#openbsd)
+
 # Sun Netra X1
 My notes about installing an OS onto a Sun Netra X1
 
